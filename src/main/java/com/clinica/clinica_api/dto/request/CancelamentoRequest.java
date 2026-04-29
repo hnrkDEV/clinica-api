@@ -1,4 +1,8 @@
 package com.clinica.clinica_api.dto.request;
 
-public class CancelamentoRequest {
+import jakarta.validation.constraints.NotBlank;
+
+public record CancelamentoRequest(
+        @NotBlank String motivo
+) {
 }

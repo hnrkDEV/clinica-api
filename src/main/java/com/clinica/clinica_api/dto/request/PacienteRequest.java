@@ -1,4 +1,11 @@
 package com.clinica.clinica_api.dto.request;
 
-public class PacienteRequest {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record PacienteRequest(
+        @NotBlank String nome,
+        @Email String email,
+        @NotBlank String telefone
+) {
 }
