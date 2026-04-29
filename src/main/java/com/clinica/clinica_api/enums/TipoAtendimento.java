@@ -1,4 +1,7 @@
 package com.clinica.clinica_api.enums;
 
-public class TipoAtendimento {
+public enum TipoAtendimento {
+    CONSULTA,
+    RETORNO,
+    EXAME
 }
