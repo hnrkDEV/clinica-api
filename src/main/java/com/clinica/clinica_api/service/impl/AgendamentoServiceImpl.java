@@ -1,4 +1,92 @@
 package com.clinica.clinica_api.service.impl;
 
-public class AgendamentoServiceImpl {
+import com.clinica.clinica_api.entity.Agendamento;
+import com.clinica.clinica_api.entity.Paciente;
+import com.clinica.clinica_api.entity.Profissional;
+import com.clinica.clinica_api.enums.StatusAgendamento;
+import com.clinica.clinica_api.exception.BusinessException;
+import com.clinica.clinica_api.exception.NotFoundException;
+import com.clinica.clinica_api.repository.AgendamentoRepository;
+import com.clinica.clinica_api.repository.PacienteRepository;
+import com.clinica.clinica_api.repository.ProfissionalRepository;
+import com.clinica.clinica_api.service.AgendamentoService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class AgendamentoServiceImpl implements AgendamentoService {
+
+    private final AgendamentoRepository agendamentoRepository;
+    private final PacienteRepository pacienteRepository;
+    private final ProfissionalRepository profissionalRepository;
+
+    @Override
+    public Agendamento criar(Long pacienteId, Long profissionalId, LocalDateTime dataHora, Agendamento agendamento) {
+
+        if (dataHora.isBefore(LocalDateTime.now())) {
+            throw new BusinessException("Não é permitido criar agendamento com data/hora no passado.");
+        }
+
+        boolean existeConflito = agendamentoRepository.existsByProfissionalIdAndDataHoraAndStatus(
+                profissionalId,
+                dataHora,
+                StatusAgendamento.AGENDADO
+        );
+
+        if (existeConflito) {
+            throw new BusinessException("Profissional já possui agendamento nesse horário.");
+        }
+
+        Paciente paciente = pacienteRepository.findById(pacienteId)
+                .orElseThrow(() -> new NotFoundException("Paciente não encontrado."));
+
+        Profissional profissional = profissionalRepository.findById(profissionalId)
+                .orElseThrow(() -> new NotFoundException("Profissional não encontrado."));
+
+        agendamento.setPaciente(paciente);
+        agendamento.setProfissional(profissional);
+        agendamento.setDataHora(dataHora);
+        agendamento.setStatus(StatusAgendamento.AGENDADO);
+        agendamento.setMotivoCancelamento(null);
+
+        return agendamentoRepository.save(agendamento);
+    }
+
+    @Override
+    public List<Agendamento> listar(Long pacienteId, Long profissionalId, StatusAgendamento status) {
+
+        if (pacienteId != null) {
+            return agendamentoRepository.findByPacienteId(pacienteId);
+        }
+
+        if (profissionalId != null) {
+            return agendamentoRepository.findByProfissionalId(profissionalId);
+        }
+
+        if (status != null) {
+            return agendamentoRepository.findByStatus(status);
+        }
+
+        return agendamentoRepository.findAll();
+    }
+
+    @Override
+    public Agendamento cancelar(Long id, String motivo) {
+
+        if (motivo == null || motivo.isBlank()) {
+           throw new BusinessException("O motivo do cancelamento é obrigatório.");
+        }
+
+        Agendamento agendamento = agendamentoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Agendamento não encontrado."));
+
+        agendamento.setStatus(StatusAgendamento.CANCELADO);
+        agendamento.setMotivoCancelamento(motivo);
+
+        return agendamentoRepository.save(agendamento);
+    }
 }
