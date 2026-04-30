@@ -1,7 +1,9 @@
 package com.clinica.clinica_api.controller;
 
+import com.clinica.clinica_api.adapter.AgendamentoAdapter;
 import com.clinica.clinica_api.dto.request.AgendamentoRequest;
 import com.clinica.clinica_api.dto.request.CancelamentoRequest;
+import com.clinica.clinica_api.dto.response.AgendamentoResponse;
 import com.clinica.clinica_api.entity.Agendamento;
 import com.clinica.clinica_api.enums.StatusAgendamento;
 import com.clinica.clinica_api.service.AgendamentoService;
@@ -21,33 +23,38 @@ public class AgendamentoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Agendamento criar(@RequestBody @Valid AgendamentoRequest request) {
-        Agendamento agendamento = Agendamento.builder()
-                .tipoAtendimento(request.tipoAtendimento())
-                .build();
+    public AgendamentoResponse criar(@RequestBody @Valid AgendamentoRequest request) {
 
-        return agendamentoService.criar(
+        Agendamento agendamento = AgendamentoAdapter.toEntity(request);
+
+        Agendamento salvo = agendamentoService.criar(
                 request.pacienteId(),
                 request.profissionalId(),
                 request.dataHora(),
                 agendamento
         );
+
+        return AgendamentoAdapter.toResponse(salvo);
     }
 
     @GetMapping
-    public List<Agendamento> listar(
+    public List<AgendamentoResponse> listar(
             @RequestParam(required = false) Long pacienteId,
             @RequestParam(required = false) Long profissionalId,
             @RequestParam(required = false) StatusAgendamento status
     ) {
-        return agendamentoService.listar(pacienteId, profissionalId, status);
+        return agendamentoService.listar(pacienteId, profissionalId, status)
+                .stream()
+                .map(AgendamentoAdapter::toResponse)
+                .toList();
     }
 
     @PatchMapping("/{id}/cancelar")
-    public Agendamento cancelar(
+    public AgendamentoResponse cancelar(
             @PathVariable Long id,
             @RequestBody @Valid CancelamentoRequest request
     ) {
-        return agendamentoService.cancelar(id, request.motivo());
+        Agendamento cancelado = agendamentoService.cancelar(id, request.motivo());
+        return AgendamentoAdapter.toResponse(cancelado);
     }
 }

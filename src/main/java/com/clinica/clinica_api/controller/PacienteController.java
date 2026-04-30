@@ -1,5 +1,6 @@
 package com.clinica.clinica_api.controller;
 
+import com.clinica.clinica_api.adapter.PacienteAdapter;
 import com.clinica.clinica_api.dto.request.PacienteRequest;
 import com.clinica.clinica_api.entity.Paciente;
 import com.clinica.clinica_api.service.PacienteService;
@@ -20,11 +21,7 @@ public class PacienteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Paciente cadastrar(@RequestBody @Valid PacienteRequest request) {
-        Paciente paciente = Paciente.builder()
-                .nome(request.nome())
-                .email(request.email())
-                .telefone(request.telefone())
-                .build();
+        Paciente paciente = PacienteAdapter.toEntity(request);
 
         return pacienteService.cadastrar(paciente);
     }
