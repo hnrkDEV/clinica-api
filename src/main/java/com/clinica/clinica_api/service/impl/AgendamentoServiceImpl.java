@@ -1,12 +1,16 @@
 package com.clinica.clinica_api.service.impl;
 
+import com.clinica.clinica_api.adapter.AuditoriaAdapter;
 import com.clinica.clinica_api.entity.Agendamento;
+import com.clinica.clinica_api.entity.Auditoria;
 import com.clinica.clinica_api.entity.Paciente;
 import com.clinica.clinica_api.entity.Profissional;
+import com.clinica.clinica_api.enums.AcaoAuditoria;
 import com.clinica.clinica_api.enums.StatusAgendamento;
 import com.clinica.clinica_api.exception.BusinessException;
 import com.clinica.clinica_api.exception.NotFoundException;
 import com.clinica.clinica_api.repository.AgendamentoRepository;
+import com.clinica.clinica_api.repository.AuditoriaRepository;
 import com.clinica.clinica_api.repository.PacienteRepository;
 import com.clinica.clinica_api.repository.ProfissionalRepository;
 import com.clinica.clinica_api.service.AgendamentoService;
@@ -23,6 +27,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     private final AgendamentoRepository agendamentoRepository;
     private final PacienteRepository pacienteRepository;
     private final ProfissionalRepository profissionalRepository;
+    private final AuditoriaRepository auditoriaRepository;
 
     @Override
     public Agendamento criar(Long pacienteId, Long profissionalId, LocalDateTime dataHora, Agendamento agendamento) {
@@ -53,7 +58,15 @@ public class AgendamentoServiceImpl implements AgendamentoService {
         agendamento.setStatus(StatusAgendamento.AGENDADO);
         agendamento.setMotivoCancelamento(null);
 
-        return agendamentoRepository.save(agendamento);
+        Agendamento agendamentoSalvo = agendamentoRepository.save(agendamento);
+
+        auditoriaRepository.save(
+                AuditoriaAdapter.agendamentoCriado(agendamentoSalvo)
+        );
+
+        return agendamentoSalvo;
+
+
     }
 
     @Override
@@ -87,6 +100,12 @@ public class AgendamentoServiceImpl implements AgendamentoService {
         agendamento.setStatus(StatusAgendamento.CANCELADO);
         agendamento.setMotivoCancelamento(motivo);
 
-        return agendamentoRepository.save(agendamento);
+        Agendamento agendamentoCancelado = agendamentoRepository.save(agendamento);
+
+        auditoriaRepository.save(
+                AuditoriaAdapter.agendamentoCancelado(agendamentoCancelado, motivo)
+        );
+
+        return agendamentoCancelado;
     }
 }
