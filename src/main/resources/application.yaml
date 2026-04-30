@@ -16,10 +16,19 @@ spring:
       enabled: true
       path: /h2-console
 
+  sql:
+    init:
+      mode: always
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
 
 server:
   port: 8081
