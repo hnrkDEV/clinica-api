@@ -1,6 +1,8 @@
 package com.clinica.clinica_api.controller;
 
+import com.clinica.clinica_api.adapter.AuditoriaAdapter;
 import com.clinica.clinica_api.entity.Profissional;
+import com.clinica.clinica_api.repository.AuditoriaRepository;
 import com.clinica.clinica_api.repository.ProfissionalRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +17,18 @@ import java.util.List;
 public class ProfissionalController {
 
     private final ProfissionalRepository profissionalRepository;
+    private final AuditoriaRepository auditoriaRepository;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Profissional cadastrar(@RequestBody @Valid Profissional profissional) {
-        return profissionalRepository.save(profissional);
+        Profissional profissionalSalvo = profissionalRepository.save(profissional);
+
+        auditoriaRepository.save(
+                AuditoriaAdapter.profissionalCadastrado(profissionalSalvo)
+        ); //colocando a auditoria aqui apenas para não criar um service somente para isso
+
+        return profissionalSalvo;
     }
 
     @GetMapping
