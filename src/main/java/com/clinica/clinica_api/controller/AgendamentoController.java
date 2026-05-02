@@ -11,9 +11,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
+@Tag(name = "Agendamentos", description = "Gerenciamento de agendamentos de consultas")
 @RestController
 @RequestMapping("/agendamentos")
 @RequiredArgsConstructor
@@ -21,6 +24,10 @@ public class AgendamentoController {
 
     private final AgendamentoService agendamentoService;
 
+    @Operation(
+            summary = "Criar agendamento",
+            description = "Cria um novo agendamento validando data futura e conflito de horário do profissional."
+    )
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AgendamentoResponse criar(@RequestBody @Valid AgendamentoRequest request) {
@@ -37,6 +44,10 @@ public class AgendamentoController {
         return AgendamentoAdapter.toResponse(salvo);
     }
 
+    @Operation(
+            summary = "Listar agendamentos",
+            description = "Lista todos os agendamentos com filtros opcionais por paciente, profissional ou status."
+    )
     @GetMapping
     public List<AgendamentoResponse> listar(
             @RequestParam(required = false) Long pacienteId,
@@ -49,6 +60,10 @@ public class AgendamentoController {
                 .toList();
     }
 
+    @Operation(
+            summary = "Cancelar agendamento",
+            description = "Cancela um agendamento existente, registra o motivo e mantém o histórico."
+    )
     @PatchMapping("/{id}/cancelar")
     public AgendamentoResponse cancelar(
             @PathVariable Long id,
