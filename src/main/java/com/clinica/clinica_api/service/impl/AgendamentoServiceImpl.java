@@ -2,10 +2,8 @@ package com.clinica.clinica_api.service.impl;
 
 import com.clinica.clinica_api.adapter.AuditoriaAdapter;
 import com.clinica.clinica_api.entity.Agendamento;
-import com.clinica.clinica_api.entity.Auditoria;
 import com.clinica.clinica_api.entity.Paciente;
 import com.clinica.clinica_api.entity.Profissional;
-import com.clinica.clinica_api.enums.AcaoAuditoria;
 import com.clinica.clinica_api.enums.StatusAgendamento;
 import com.clinica.clinica_api.exception.BusinessException;
 import com.clinica.clinica_api.exception.NotFoundException;
@@ -14,6 +12,7 @@ import com.clinica.clinica_api.repository.AuditoriaRepository;
 import com.clinica.clinica_api.repository.PacienteRepository;
 import com.clinica.clinica_api.repository.ProfissionalRepository;
 import com.clinica.clinica_api.service.AgendamentoService;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +29,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     private final AuditoriaRepository auditoriaRepository;
 
     @Override
+    @Transactional
     public Agendamento criar(Long pacienteId, Long profissionalId, LocalDateTime dataHora, Agendamento agendamento) {
 
         if (dataHora.isBefore(LocalDateTime.now())) {
@@ -88,6 +88,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     }
 
     @Override
+    @Transactional
     public Agendamento cancelar(Long id, String motivo) {
 
         if (motivo == null || motivo.isBlank()) {

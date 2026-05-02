@@ -7,6 +7,7 @@ import com.clinica.clinica_api.repository.PacienteRepository;
 import com.clinica.clinica_api.service.PacienteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class PacienteServiceImpl implements PacienteService {
     private final AuditoriaRepository auditoriaRepository;
 
     @Override
+    @Transactional
     public Paciente cadastrar(Paciente paciente) {
         Paciente pacienteSalvo = pacienteRepository.save(paciente);
 
