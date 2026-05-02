@@ -98,6 +98,10 @@ public class AgendamentoServiceImpl implements AgendamentoService {
         Agendamento agendamento = agendamentoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Agendamento não encontrado."));
 
+        if (agendamento.getStatus() == StatusAgendamento.CANCELADO) {
+            throw new BusinessException("Agendamento já está cancelado.");
+        }
+
         agendamento.setStatus(StatusAgendamento.CANCELADO);
         agendamento.setMotivoCancelamento(motivo);
 
