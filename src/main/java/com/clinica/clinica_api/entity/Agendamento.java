@@ -28,12 +28,15 @@ public class Agendamento {
     @JoinColumn(name = "profissional_id", nullable = false)
     private Profissional profissional;
 
+    @Column(nullable = false)
     private LocalDateTime dataHora;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TipoAtendimento tipoAtendimento;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private StatusAgendamento status;
 
     private String motivoCancelamento;
