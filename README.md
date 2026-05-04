@@ -54,13 +54,20 @@ cd clinica-api
 ```
 
 ## Executar a aplicação
-### 1. No Windows:
+
+### Opção 1 — Execução local (sem o Docker)
+- No Windows:
 ```bash
 .\gradlew bootRun
 ```
-### 2. No Linux/Mac:
+- No Linux/Mac:
 ```bash
 ./gradlew bootRun
+```
+## Executando com Docker:
+```bash
+docker build -t clinica-api .
+docker run -p 8081:8081 clinica-api
 ```
 ### A aplicação será iniciada em:
 ``
