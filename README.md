@@ -13,6 +13,7 @@ API REST desenvolvida em Java com Spring Boot para controle de agendamentos de c
 - JUnit
 - Mockito
 - Swagger / Springdoc OpenAPI
+- Docker
 
 ## Funcionalidades
 
