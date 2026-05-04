@@ -27,7 +27,7 @@
 ## O que ficou de fora
 
 - Autenticação e autorização, pois não faziam parte do escopo obrigatório.
-- Paginação nas listagens.
+- Paginação nas listagens, que poderia ser adicionado futuramente em uma possivel evolução.
 - Regras avançadas de disponibilidade, como duração da consulta ou agenda por intervalo.
 
 ## Uso de IA
