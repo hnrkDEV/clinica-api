@@ -27,9 +27,7 @@
 ## O que ficou de fora
 
 - Autenticação e autorização, pois não faziam parte do escopo obrigatório.
-- Frontend para consumo da API.
 - Paginação nas listagens.
-- Integração com banco Oracle em execução real.
 - Regras avançadas de disponibilidade, como duração da consulta ou agenda por intervalo.
 
 ## Uso de IA
@@ -37,7 +35,6 @@
 Foi utilizada IA como apoio durante o desenvolvimento para:
 
 - Sugerir estrutura inicial do projeto.
-- Apoiar na organização das camadas.
 - Auxiliar na escrita de testes automatizados.
 - Revisar boas práticas de arquitetura e tratamento de erros.
 - Apoiar na documentação do projeto.
